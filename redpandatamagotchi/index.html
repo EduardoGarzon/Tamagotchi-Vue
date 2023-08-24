@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/favicon.ico">
+  <!-- Link para o Bootstrap-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TAMAGOTCHI VUE</title>
+</head>
+
+<!--Header para definicao da Nav-->
+<header class="header-sobre" class="header-voltar">
+  <h1>TAMAGOTCHI</h1>
+  <nav>
+    <!-- Adicionamos a classe toggle-link ao link "Sobre" -->
+    <a href="#page2" class="toggle-link">Sobre</a>
+  </nav>
+</header>
+
+<!--Definicao do body que contem o conteudo principal da pagina-->
+
+<body>
+  <!--Conteudo principal-->
+  <main style="padding-top: 10px;">
+    <!--Conteudo da aplicacao Vue.js-->
+    <section id="app"></section>
+    <!--Conteudo da segunda section html-->
+    <section id="page2">
+      <h1>Breve historia sobre Tamagotchi</h1>
+      <div>
+        <p>O Tamagotchi é um brinquedo eletrônico virtual criado pela empresa japonesa Bandai.Foi lançado pela primeira
+          vez em 1996 no Japão e rapidamente se tornou um fenômeno mundial, conquistando uma enorme popularidade entre
+          crianças e adultos de diversas faixas etárias. A ideia por trás do Tamagotchi era proporcionar uma experiência
+          de cuidar de um animal de estimação virtual.
+          Cada dispositivo possuía uma tela de LCD em preto e branco, onde um ovo digital aparecia inicialmente. O
+          objetivo era cuidar e alimentar o Tamagotchi, assim como se faz com um animal de verdade, através de uma série
+          de botões para selecionar ações como alimentação, limpeza e brincadeiras.</p>
+        <p> O Tamagotchi tinha suas próprias necessidades e emoções, e o modo como era cuidado determinava o seu
+          crescimento e desenvolvimento. Se fosse bem alimentado e cuidado, ele se transformava em uma criatura saudável
+          e
+          feliz. No entanto, se fosse negligenciado, poderia ficar doente ou até mesmo morrer. Essa interação e
+          responsabilidade criavam um senso de conexão emocional entre os usuários e seus Tamagotchis virtuais.</p>
+        <p> A popularidade do Tamagotchi atingiu seu auge na década de 1990, com milhões de unidades vendidas em todo o
+          mundo. O brinquedo se tornou uma verdadeira febre, gerando diversos produtos licenciados, como desenhos
+          animados, filmes, jogos de vídeo game e até mesmo uma linha de roupas e acessórios.
+        </p>
+        <p>
+          Com o tempo, o interesse no Tamagotchi diminuiu, mas a nostalgia dos anos 90 trouxe de volta a popularidade do
+          brinquedo em várias ocasiões. A Bandai lançou várias versões atualizadas e reedições do Tamagotchi, e ele
+          continua sendo um brinquedo amado por muitos colecionadores e entusiastas.
+
+        </p>
+        <p>O Tamagotchi deixou um legado duradouro na cultura pop e é considerado um dos primeiros brinquedos
+          eletrônicos
+          virtuais de grande sucesso. Sua história é uma lembrança vívida da evolução da tecnologia e do poder que um
+          simples brinquedo pode ter para cativar a imaginação das pessoas em todo o mundo.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!--JS base da aplicacao padrao-->
+  <script type="module" src="/src/main.js"></script>
+
+  <!--JS para configuracao do controle da pagina como smoothscroll-->
+  <script>
+    let num = 0;
+    // Função para rolagem suave ao clicar em links de âncoras
+    function smoothScroll(target) {
+      var targetElement = document.querySelector(target);
+      var targetPosition = targetElement.getBoundingClientRect().top;
+      var startPosition = window.pageYOffset;
+      var distance = targetPosition - startPosition;
+      var duration = 800; // Velocidade de rolagem em milissegundos (ajuste conforme necessário)
+      var startTime = null;
+
+      function animation(currentTime) {
+        if (startTime === null) startTime = currentTime;
+        var timeElapsed = currentTime - startTime;
+        var run = ease(timeElapsed, startPosition, distance, duration);
+        window.scrollTo(0, run);
+        if (timeElapsed < duration) requestAnimationFrame(animation);
+      }
+
+      // Função de interpolação para suavizar a animação (pode usar outras fórmulas também)
+      function ease(t, b, c, d) {
+        t /= d / 2;
+        if (t < 1) return c / 2 * t * t + b;
+        t--;
+        return -c / 2 * (t * (t - 2) - 1) + b;
+      }
+
+      requestAnimationFrame(animation);
+    }
+
+    // Captura o link "Sobre" e adiciona um evento de clique para rolagem suave
+    var linkSobre = document.querySelector('.toggle-link'); // Alteramos o seletor para .toggle-link
+    linkSobre.addEventListener('click', function (e) {
+      e.preventDefault();
+      var target = this.getAttribute('href');
+      smoothScroll(target);
+      if (num == 0) {
+        this.textContent = 'Voltar';
+        document.querySelector('header').classList.remove('header-sobre');
+        document.querySelector('header').classList.add('header-voltar');
+        num = 1;
+      } else {
+        this.textContent = 'Sobre';
+        document.querySelector('header').classList.remove('header-voltar');
+        document.querySelector('header').classList.add('header-sobre');
+        num = 0;
+      }
+    });
+
+    // Captura todos os links de âncoras (que levam a seções) e adiciona um evento de clique para rolagem suave
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        var target = this.getAttribute('href');
+        smoothScroll(target);
+      });
+    });
+
+    // Evento de carregamento para garantir que a rolagem suave funcione corretamente após o carregamento da página
+    window.addEventListener('load', function () {
+      // Recarrega a página no topo
+      window.scrollTo(0, 0);
+    });
+
+    // Evento onbeforeunload para garantir que a página seja recarregada no topo ao dar um reload
+    window.onbeforeunload = function () {
+      window.scrollTo(0, 0);
+    };
+  </script>
+
+  <!--Link Bootstrap-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
+    </script>
+</body>
+
+</html>
